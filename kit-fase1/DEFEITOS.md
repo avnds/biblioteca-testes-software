@@ -186,3 +186,106 @@ Expected java.lang.IllegalArgumentException
 to be thrown, but nothing was thrown.
 
 **Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-008 — Empréstimo permitido no limite do tipo
+
+**Método:** podeEmprestar(TipoUsuario tipo, int emprestimosAtivos, int multaPendenteCentavos, boolean possuiAtraso)
+
+**Entrada:** ALUNO com 3, PROFESSOR com 8 e VISITANTE com 1
+empréstimo ativo, todos com multa zero e sem atraso.
+
+**Técnica:** Análise de valores-limite (CE24).
+
+**Resultado esperado:** false em cada caso.
+
+**Resultado obtido:** true em cada caso.
+
+**Descrição:**
+A quantidade de empréstimos ativos precisa ser menor
+que o limite do tipo. Nos três casos, a quantidade
+é igual ao limite.
+
+**Evidência:**
+
+| Caso | Entrada (tipo, ativos, multa, atraso) | Esperado | Obtido | Fronteira |
+|---|---|---|---|---|
+| CT02 | ALUNO, 3, 0, false | false | true | 3 empréstimos |
+| CT05 | PROFESSOR, 8, 0, false | false | true | 8 empréstimos |
+| CT08 | VISITANTE, 1, 0, false | false | true | 1 empréstimo |
+
+**Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-009 — Empréstimo permitido com multa acima do limite
+
+**Método:** podeEmprestar(TipoUsuario tipo, int emprestimosAtivos, int multaPendenteCentavos, boolean possuiAtraso)
+
+**Entrada:** ALUNO, 0 empréstimos ativos, 1001 centavos de
+multa pendente e sem atraso (CT12).
+
+**Técnica:** Análise de valores-limite (CE26).
+
+**Resultado esperado:** false.
+
+**Resultado obtido:** true.
+
+**Descrição:**
+A especificação permite multa pendente de até 1000
+centavos. O sistema autorizou o empréstimo com 1001 centavos.
+
+**Evidência:**
+expected: <false> but was: <true>
+
+**Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-010 — Empréstimo permitido para usuário com atraso
+
+**Método:** podeEmprestar(TipoUsuario tipo, int emprestimosAtivos, int multaPendenteCentavos, boolean possuiAtraso)
+
+**Entrada:** ALUNO, 0 empréstimos ativos, multa zero e
+possuiAtraso igual a true (CT13).
+
+**Técnica:** Particionamento de equivalência (CE28).
+
+**Resultado esperado:** false.
+
+**Resultado obtido:** true.
+
+**Descrição:**
+A presença de atraso deveria impedir o empréstimo
+mesmo quando as outras condições são satisfeitas.
+
+**Evidência:**
+expected: <false> but was: <true>
+
+**Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-011 — Multa pendente negativa não é rejeitada
+
+**Método:** podeEmprestar(TipoUsuario tipo, int emprestimosAtivos, int multaPendenteCentavos, boolean possuiAtraso)
+
+**Entrada:** ALUNO, 0 empréstimos ativos, -1 centavo de multa
+pendente e sem atraso (CT15).
+
+**Técnica:** Particionamento de equivalência e análise de valores-limite (CE30).
+
+**Resultado esperado:** IllegalArgumentException.
+
+**Resultado obtido:** Nenhuma exceção lançada.
+
+**Descrição:**
+A especificação exige uma exceção quando a multa
+pendente é negativa.
+
+**Evidência:**
+Expected java.lang.IllegalArgumentException
+to be thrown, but nothing was thrown.
+
+**Status:** Reproduzido por teste automatizado.

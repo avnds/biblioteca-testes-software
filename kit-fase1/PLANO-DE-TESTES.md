@@ -184,3 +184,82 @@ limite máximo da multa e validação de dias negativos.
 
 Os valores esperados foram mantidos conforme a
 especificação, mesmo nos testes reprovados.
+
+## 5. Método podeEmprestar(TipoUsuario tipo, int emprestimosAtivos, int multaPendenteCentavos, boolean possuiAtraso)
+
+### Objetivo
+
+Verificar se o empréstimo é permitido somente quando
+o usuário está abaixo do limite de empréstimos, tem
+multa pendente de até 1000 centavos e não possui atraso.
+
+### Técnicas utilizadas
+
+- Particionamento de equivalência.
+- Análise de valores-limite.
+
+### Classes de equivalência
+
+| Classe | Descrição | Tipo | Casos de teste |
+|---|---|---|---|
+| CE20 | ALUNO | Válida | CT01–CT03 |
+| CE21 | PROFESSOR | Válida | CT04–CT06 |
+| CE22 | VISITANTE | Válida | CT07–CT09 |
+| CE23 | Empréstimos ativos abaixo do limite do tipo | Válida | CT01, CT04, CT07 |
+| CE24 | Empréstimos ativos no limite ou acima dele | Válida | CT02–CT03, CT05–CT06, CT08–CT09 |
+| CE25 | Multa pendente entre 0 e 1000 centavos | Válida | CT01, CT10–CT11 |
+| CE26 | Multa pendente acima de 1000 centavos | Válida | CT12 |
+| CE27 | Usuário sem atraso | Válida | CT01, CT10 |
+| CE28 | Usuário com atraso | Válida | CT13 |
+| CE29 | Empréstimos ativos negativos | Inválida | CT14 |
+| CE30 | Multa pendente negativa | Inválida | CT15 |
+| CE31 | Tipo de usuário nulo | Inválida | CT16 |
+
+### Casos de teste
+
+| ID | Teste | Tipo de usuário | Empréstimos ativos | Multa pendente (centavos) | Possui atraso | Esperado | Resultado |
+|---|---|---|---:|---:|---|---|---|
+| CT01 | `devePermitirAlunoComDoisEmprestimos` | ALUNO | 2 | 0 | false | true | Aprovado |
+| CT02 | `deveImpedirAlunoComTresEmprestimos` | ALUNO | 3 | 0 | false | false | Reprovado — DEF-008 |
+| CT03 | `deveImpedirAlunoComQuatroEmprestimos` | ALUNO | 4 | 0 | false | false | Aprovado |
+| CT04 | `devePermitirProfessorComSeteEmprestimos` | PROFESSOR | 7 | 0 | false | true | Aprovado |
+| CT05 | `deveImpedirProfessorComOitoEmprestimos` | PROFESSOR | 8 | 0 | false | false | Reprovado — DEF-008 |
+| CT06 | `deveImpedirProfessorComNoveEmprestimos` | PROFESSOR | 9 | 0 | false | false | Aprovado |
+| CT07 | `devePermitirVisitanteSemEmprestimos` | VISITANTE | 0 | 0 | false | true | Aprovado |
+| CT08 | `deveImpedirVisitanteComUmEmprestimo` | VISITANTE | 1 | 0 | false | false | Reprovado — DEF-008 |
+| CT09 | `deveImpedirVisitanteComDoisEmprestimos` | VISITANTE | 2 | 0 | false | false | Aprovado |
+| CT10 | `devePermitirEmprestimoComMultaDe999Centavos` | ALUNO | 0 | 999 | false | true | Aprovado |
+| CT11 | `devePermitirEmprestimoComMultaDe1000Centavos` | ALUNO | 0 | 1000 | false | true | Aprovado |
+| CT12 | `deveImpedirEmprestimoComMultaDe1001Centavos` | ALUNO | 0 | 1001 | false | false | Reprovado — DEF-009 |
+| CT13 | `deveImpedirEmprestimoQuandoPossuiAtraso` | ALUNO | 0 | 0 | true | false | Reprovado — DEF-010 |
+| CT14 | `deveLancarExcecaoParaEmprestimosAtivosNegativos` | ALUNO | -1 | 0 | false | IllegalArgumentException | Aprovado |
+| CT15 | `deveLancarExcecaoParaMultaPendenteNegativa` | ALUNO | 0 | -1 | false | IllegalArgumentException | Reprovado — DEF-011 |
+| CT16 | `deveLancarExcecaoParaTipoNulo` | null | 0 | 0 | false | IllegalArgumentException | Aprovado |
+
+### Análise de valores-limite
+
+Foram verificados:
+
+- 2, 3 e 4 empréstimos para ALUNO (CT01–CT03).
+- 7, 8 e 9 empréstimos para PROFESSOR (CT04–CT06).
+- 0, 1 e 2 empréstimos para VISITANTE (CT07–CT09).
+- 999, 1000 e 1001 centavos de multa pendente (CT10–CT12).
+- -1 e 0 empréstimos ativos, com multa zero e sem atraso (CT14 e CT07).
+- -1 e 0 centavos de multa pendente (CT15 e CT01).
+
+### Resultado da execução
+
+- Testes executados: 16
+- Testes aprovados: 10
+- Testes reprovados: 6
+- Erros de execução: 0
+- Defeitos registrados: DEF-008, DEF-009, DEF-010 e DEF-011.
+
+### Conclusão
+
+O sistema permite empréstimos no limite de cada tipo,
+com multa pendente de 1001 centavos ou quando o usuário
+possui atraso. Também aceita multa pendente negativa.
+
+Os valores esperados foram mantidos conforme a
+especificação, mesmo nos testes reprovados.
