@@ -79,3 +79,110 @@ posterior à prevista para o tipo VISITANTE.
 expected: <2026-11-27> but was: <2026-11-30>
 
 **Status:** Defeito reproduzido por teste automatizado.
+
+---
+
+## DEF-004 — Tarifa incorreta no 11º dia cobrado
+
+**Método:** multaCentavos(TipoUsuario tipo, int diasAtraso)
+
+**Entrada:** ALUNO, 11 dias de atraso.
+
+**Técnica:** Análise de valores-limite.
+
+**Teste:** deveCobrar1200CentavosNoDecimoPrimeiroDia
+
+**Resultado esperado:** 1200 centavos.
+
+**Resultado obtido:** 1100 centavos.
+
+**Descrição:**
+Segundo a especificação, os primeiros 10 dias cobrados
+custam 100 centavos por dia e, a partir do 11º dia,
+a cobrança passa para 200 centavos por dia.
+
+O resultado obtido não corresponde à regra.
+
+**Evidência:**
+expected: <1200> but was: <1100>
+
+**Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-005 — Tolerância incorreta para professor
+
+**Método:** multaCentavos(TipoUsuario tipo, int diasAtraso)
+
+**Técnicas:** Particionamento de equivalência e
+análise de valores-limite.
+
+**Regra esperada:**
+PROFESSOR possui três dias de tolerância.
+A cobrança começa no quarto dia de atraso.
+
+**Casos reprovados:**
+
+| Dias | Esperado | Obtido |
+|---|---:|---:|
+| 3 | 0 | 100 |
+| 4 | 100 | 200 |
+| 13 | 1000 | 1100 |
+| 14 | 1200 | 1400 |
+
+**Descrição:**
+Os resultados observados divergem da regra de
+tolerância e da cobrança progressiva para PROFESSOR.
+
+**Status:** Reproduzido por testes automatizados.
+
+---
+
+## DEF-006 — Multa ultrapassa o teto permitido
+
+**Método:** multaCentavos(TipoUsuario tipo, int diasAtraso)
+
+**Entrada:** ALUNO, 31 dias de atraso.
+
+**Técnica:** Análise de valores-limite.
+
+**Resultado esperado:** 5000 centavos.
+
+**Resultado obtido:** 5200 centavos.
+
+**Descrição:**
+A especificação estabelece multa máxima de
+5000 centavos por empréstimo.
+
+Com 30 dias, o teste passou. Com 31 dias,
+a implementação ultrapassou o teto permitido.
+
+**Evidência:**
+expected: <5000> but was: <5200>
+
+**Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-007 — Dias negativos não são rejeitados
+
+**Método:** multaCentavos(TipoUsuario tipo, int diasAtraso)
+
+**Entrada:** ALUNO, -1 dia de atraso.
+
+**Técnica:** Particionamento de equivalência
+— entrada inválida.
+
+**Resultado esperado:** IllegalArgumentException.
+
+**Resultado obtido:** Nenhuma exceção lançada.
+
+**Descrição:**
+A implementação aceita um valor negativo para
+dias de atraso, contrariando a especificação.
+
+**Evidência:**
+Expected java.lang.IllegalArgumentException
+to be thrown, but nothing was thrown.
+
+**Status:** Reproduzido por teste automatizado.
