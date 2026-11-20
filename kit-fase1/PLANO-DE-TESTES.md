@@ -263,3 +263,77 @@ possui atraso. Também aceita multa pendente negativa.
 
 Os valores esperados foram mantidos conforme a
 especificação, mesmo nos testes reprovados.
+
+## 6. Método podeRenovar(TipoUsuario tipo, int renovacoesFeitas, boolean possuiReserva, boolean emAtraso)
+
+### Objetivo
+
+Verificar se a renovação respeita o limite de cada
+tipo de usuário e se a presença de reserva ou atraso
+impede a renovação.
+
+### Técnicas utilizadas
+
+- Particionamento de equivalência.
+- Análise de valores-limite.
+
+### Classes de equivalência
+
+| Classe | Descrição | Tipo | Casos de teste |
+|---|---|---|---|
+| CE32 | ALUNO com 0 ou 1 renovação feita | Válida | CT01–CT02 |
+| CE33 | ALUNO com 2 ou mais renovações feitas | Válida | CT03–CT04 |
+| CE34 | PROFESSOR com 0 a 2 renovações feitas | Válida | CT05 |
+| CE35 | PROFESSOR com 3 ou mais renovações feitas | Válida | CT06–CT07 |
+| CE36 | VISITANTE com contagem de renovações não negativa | Válida | CT08 |
+| CE37 | Obra sem reserva | Válida | CT01 |
+| CE38 | Obra com reserva | Válida | CT09 |
+| CE39 | Empréstimo sem atraso | Válida | CT01 |
+| CE40 | Empréstimo em atraso | Válida | CT10 |
+| CE41 | Número de renovações feitas negativo, para qualquer tipo | Inválida | CT11–CT13 |
+| CE42 | Tipo de usuário nulo | Inválida | CT14 |
+
+### Casos de teste
+
+| ID | Teste | Tipo de usuário | Renovações feitas | Possui reserva | Em atraso | Esperado | Resultado |
+|---|---|---|---:|---|---|---|---|
+| CT01 | `devePermitirAlunoSemRenovacoes` | ALUNO | 0 | false | false | true | Aprovado |
+| CT02 | `devePermitirAlunoComUmaRenovacao` | ALUNO | 1 | false | false | true | Aprovado |
+| CT03 | `deveImpedirAlunoComDuasRenovacoes` | ALUNO | 2 | false | false | false | Aprovado |
+| CT04 | `deveImpedirAlunoComTresRenovacoes` | ALUNO | 3 | false | false | false | Aprovado |
+| CT05 | `devePermitirProfessorComDuasRenovacoes` | PROFESSOR | 2 | false | false | true | Aprovado |
+| CT06 | `deveImpedirProfessorComTresRenovacoes` | PROFESSOR | 3 | false | false | false | Reprovado — DEF-012 |
+| CT07 | `deveImpedirProfessorComQuatroRenovacoes` | PROFESSOR | 4 | false | false | false | Aprovado |
+| CT08 | `deveImpedirVisitanteSemRenovacoes` | VISITANTE | 0 | false | false | false | Reprovado — DEF-013 |
+| CT09 | `deveImpedirRenovacaoQuandoPossuiReserva` | ALUNO | 0 | true | false | false | Aprovado |
+| CT10 | `deveImpedirRenovacaoQuandoEstaEmAtraso` | ALUNO | 0 | false | true | false | Aprovado |
+| CT11 | `deveLancarExcecaoParaRenovacoesNegativasDeAluno` | ALUNO | -1 | false | false | IllegalArgumentException | Aprovado |
+| CT12 | `deveLancarExcecaoParaRenovacoesNegativasDeProfessor` | PROFESSOR | -1 | false | false | IllegalArgumentException | Aprovado |
+| CT13 | `deveLancarExcecaoParaRenovacoesNegativasDeVisitante` | VISITANTE | -1 | false | false | IllegalArgumentException | Aprovado |
+| CT14 | `deveLancarExcecaoParaTipoNulo` | null | 0 | false | false | IllegalArgumentException | Aprovado |
+
+### Análise de valores-limite
+
+Foram verificados:
+
+- 1, 2 e 3 renovações feitas para ALUNO (CT02–CT04).
+- 2, 3 e 4 renovações feitas para PROFESSOR (CT05–CT07).
+- -1 para cada tipo (CT11–CT13) e 0 como menor valor válido
+  do contador (CT01 e CT08).
+
+### Resultado da execução
+
+- Testes executados: 14
+- Testes aprovados: 12
+- Testes reprovados: 2
+- Erros de execução: 0
+- Defeitos registrados: DEF-012 e DEF-013.
+
+### Conclusão
+
+O sistema permite uma nova renovação para PROFESSOR
+com três renovações feitas e permite que VISITANTE
+renove um empréstimo.
+
+Os valores esperados foram mantidos conforme a
+especificação, mesmo nos testes reprovados.

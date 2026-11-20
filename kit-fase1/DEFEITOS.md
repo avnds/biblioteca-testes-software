@@ -291,3 +291,54 @@ pendente é negativa.
 [ERROR]   PodeEmprestarTest.deveLancarExcecaoParaMultaPendenteNegativa:87 Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
 
 **Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-012 — Renovação permitida para professor no limite
+
+**Método:** podeRenovar(TipoUsuario tipo, int renovacoesFeitas, boolean possuiReserva, boolean emAtraso)
+
+**Entrada:** PROFESSOR, 3 renovações feitas, sem reserva
+e sem atraso (CT06).
+
+**Técnica:** Análise de valores-limite (CE35).
+
+**Resultado esperado:** false.
+
+**Resultado obtido:** true.
+
+**Descrição:**
+A especificação permite até três renovações para
+PROFESSOR. Com três já feitas, a próxima ultrapassa
+esse limite.
+
+**Evidência:**
+
+[ERROR]   PodeRenovarTest.deveImpedirProfessorComTresRenovacoes:40 expected: `<false>` but was: `<true>`
+
+**Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-013 — Renovação permitida para visitante
+
+**Método:** podeRenovar(TipoUsuario tipo, int renovacoesFeitas, boolean possuiReserva, boolean emAtraso)
+
+**Entrada:** VISITANTE, 0 renovações feitas, sem reserva
+e sem atraso (CT08).
+
+**Técnica:** Particionamento de equivalência (CE36).
+
+**Resultado esperado:** false.
+
+**Resultado obtido:** true.
+
+**Descrição:**
+A especificação estabelece que VISITANTE nunca pode
+renovar um empréstimo, mesmo sem reserva ou atraso.
+
+**Evidência:**
+
+[ERROR]   PodeRenovarTest.deveImpedirVisitanteSemRenovacoes:50 expected: `<false>` but was: `<true>`
+
+**Status:** Reproduzido por teste automatizado.
