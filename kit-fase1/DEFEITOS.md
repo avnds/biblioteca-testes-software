@@ -209,11 +209,11 @@ que o limite do tipo. Nos três casos, a quantidade
 
 **Evidência:**
 
-| Caso | Entrada (tipo, ativos, multa, atraso) | Esperado | Obtido | Fronteira |
-|---|---|---|---|---|
-| CT02 | ALUNO, 3, 0, false | false | true | 3 empréstimos |
-| CT05 | PROFESSOR, 8, 0, false | false | true | 8 empréstimos |
-| CT08 | VISITANTE, 1, 0, false | false | true | 1 empréstimo |
+[ERROR]   PodeEmprestarTest.deveImpedirAlunoComTresEmprestimos:20 expected: `<false>` but was: `<true>`
+
+[ERROR]   PodeEmprestarTest.deveImpedirProfessorComOitoEmprestimos:35 expected: `<false>` but was: `<true>`
+
+[ERROR]   PodeEmprestarTest.deveImpedirVisitanteComUmEmprestimo:50 expected: `<false>` but was: `<true>`
 
 **Status:** Reproduzido por teste automatizado.
 
@@ -237,7 +237,8 @@ A especificação permite multa pendente de até 1000
 centavos. O sistema autorizou o empréstimo com 1001 centavos.
 
 **Evidência:**
-expected: <false> but was: <true>
+
+[ERROR]   PodeEmprestarTest.deveImpedirEmprestimoComMultaDe1001Centavos:70 expected: `<false>` but was: `<true>`
 
 **Status:** Reproduzido por teste automatizado.
 
@@ -261,7 +262,8 @@ A presença de atraso deveria impedir o empréstimo
 mesmo quando as outras condições são satisfeitas.
 
 **Evidência:**
-expected: <false> but was: <true>
+
+[ERROR]   PodeEmprestarTest.deveImpedirEmprestimoQuandoPossuiAtraso:75 expected: `<false>` but was: `<true>`
 
 **Status:** Reproduzido por teste automatizado.
 
@@ -285,7 +287,7 @@ A especificação exige uma exceção quando a multa
 pendente é negativa.
 
 **Evidência:**
-Expected java.lang.IllegalArgumentException
-to be thrown, but nothing was thrown.
+
+[ERROR]   PodeEmprestarTest.deveLancarExcecaoParaMultaPendenteNegativa:87 Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
 
 **Status:** Reproduzido por teste automatizado.
