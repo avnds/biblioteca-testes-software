@@ -110,3 +110,77 @@ do domingo para segunda-feira.
 ### Conclusão
 A implementação apresentou divergências no ajuste
 de domingo para PROFESSOR e no prazo de VISITANTE.
+
+---
+
+## 4. Método multaCentavos(TipoUsuario tipo, int diasAtraso)
+
+### Objetivo
+
+Verificar o cálculo da multa por atraso, considerando
+o tipo de usuário, a tolerância de professores, as
+faixas de cobrança e o teto de 5000 centavos.
+
+### Técnicas utilizadas
+
+- Particionamento de equivalência.
+- Análise de valores-limite.
+
+### Classes de equivalência
+
+| Classe | Descrição | Tipo |
+|---|---|---|
+| CE14 | ALUNO com atraso não negativo | Válida |
+| CE15 | VISITANTE com atraso não negativo | Válida |
+| CE16 | PROFESSOR com até 3 dias de atraso | Válida |
+| CE17 | PROFESSOR com mais de 3 dias de atraso | Válida |
+| CE18 | Dias de atraso negativos | Inválida |
+| CE19 | Tipo de usuário nulo | Inválida |
+
+### Casos de teste
+
+| ID | Tipo | Dias | Esperado (centavos) | Resultado |
+|---|---|---:|---:|---|
+| CT01 | ALUNO | 0 | 0 | Aprovado |
+| CT02 | ALUNO | 1 | 100 | Aprovado |
+| CT03 | ALUNO | 10 | 1000 | Aprovado |
+| CT04 | ALUNO | 11 | 1200 | Reprovado — DEF-004 |
+| CT05 | ALUNO | 30 | 5000 | Aprovado |
+| CT06 | ALUNO | 31 | 5000 | Reprovado — DEF-006 |
+| CT07 | PROFESSOR | 3 | 0 | Reprovado — DEF-005 |
+| CT08 | PROFESSOR | 4 | 100 | Reprovado — DEF-005 |
+| CT09 | PROFESSOR | 13 | 1000 | Reprovado — DEF-005 |
+| CT10 | PROFESSOR | 14 | 1200 | Reprovado — DEF-005 |
+| CT11 | VISITANTE | 1 | 100 | Aprovado |
+| CT12 | ALUNO | -1 | IllegalArgumentException | Reprovado — DEF-007 |
+| CT13 | null | 1 | IllegalArgumentException | Aprovado |
+
+### Análise de valores-limite
+
+Foram verificados:
+
+- 0 e 1 dia: início da cobrança.
+- 3 e 4 dias: término da tolerância de PROFESSOR.
+- 10 e 11 dias cobrados: mudança da tarifa diária.
+- 13 e 14 dias de atraso para PROFESSOR:
+  correspondem a 10 e 11 dias cobrados.
+- 30 e 31 dias para ALUNO: alcance e manutenção
+  do teto máximo de 5000 centavos.
+- -1 dia: entrada inválida imediatamente abaixo de zero.
+
+### Resultado da execução
+
+- Testes executados: 13
+- Testes aprovados: 6
+- Testes reprovados: 7
+- Erros de execução: 0
+- Defeitos registrados: DEF-004, DEF-005, DEF-006 e DEF-007.
+
+### Conclusão
+
+A implementação apresenta divergências nas regras
+de cobrança progressiva, tolerância de PROFESSOR,
+limite máximo da multa e validação de dias negativos.
+
+Os valores esperados foram mantidos conforme a
+especificação, mesmo nos testes reprovados.
