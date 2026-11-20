@@ -25,6 +25,9 @@ JUnit 5 para os métodos:
 - limiteEmprestimos()
 - dataDevolucao()
 - multaCentavos()
+- podeEmprestar()
+- podeRenovar()
+- multaTotalCentavos()
 
 Os testes foram executados no ambiente local
 utilizando Maven.
@@ -37,7 +40,7 @@ esperados e obtidos.
 
 Foram identificadas divergências em relação
 à especificação, registradas como DEF-001
-até DEF-007.
+até DEF-018.
 
 ### 2.4 Documentação
 
@@ -83,6 +86,4 @@ de testes de caixa-preta.
 ## 5. Atualizações futuras
 
 Este documento deverá ser atualizado caso
-a IA seja utilizada em outras etapas do projeto,
-incluindo os métodos restantes e a revisão
-final da entrega.
+a IA seja utilizada nas fases 2 ou 3 do projeto.
