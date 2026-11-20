@@ -342,3 +342,135 @@ renovar um empréstimo, mesmo sem reserva ou atraso.
 [ERROR]   PodeRenovarTest.deveImpedirVisitanteSemRenovacoes:50 expected: `<false>` but was: `<true>`
 
 **Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-014 — A multa do primeiro empréstimo não aparece no total
+
+**Método:** multaTotalCentavos(TipoUsuario tipo, int[] diasAtrasoPorEmprestimo)
+
+**Entrada:** VISITANTE com [1] (CT03) e ALUNO com [29], [30] ou [31, 1] (CT07–CT09).
+
+**Técnica:** Particionamento de equivalência e análise de valores-limite (CE47, CE48, CE50, CE55 e CE56).
+
+**Resultado esperado:** 100, 4800, 5000 e 5100 centavos, respectivamente.
+
+**Resultado obtido:** 0, 0, 0 e 100 centavos, respectivamente.
+
+**Descrição:**
+Nos casos com um único empréstimo, a multa esperada
+está ausente. Com [31, 1], o valor observado corresponde
+apenas à multa do segundo empréstimo.
+
+**Evidência:**
+
+[ERROR]   MultaTotalCentavosTest.deveCobrarMultaParaUmDiaDeAtraso:28 expected: `<100>` but was: `<0>`
+
+[ERROR]   MultaTotalCentavosTest.deveManterMultaIndividualAbaixoDoTeto:56 expected: `<4800>` but was: `<0>`
+
+[ERROR]   MultaTotalCentavosTest.deveAtingirTetoIndividual:63 expected: `<5000>` but was: `<0>`
+
+[ERROR]   MultaTotalCentavosTest.deveLimitarMultaIndividualAntesDeSomar:70 expected: `<5100>` but was: `<100>`
+
+**Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-015 — Total incorreto na transição da tarifa progressiva
+
+**Método:** multaTotalCentavos(TipoUsuario tipo, int[] diasAtrasoPorEmprestimo)
+
+**Entrada:** ALUNO com [10, 11] dias de atraso (CT05).
+
+**Técnica:** Análise de valores-limite (CE53 e CE54).
+
+**Resultado esperado:** 2200 centavos.
+
+**Resultado obtido:** 1100 centavos.
+
+**Descrição:**
+Os dois empréstimos deveriam contribuir com 1000 e
+1200 centavos, respectivamente. O total observado
+fica 100 centavos abaixo até da multa esperada para
+o segundo empréstimo sozinho.
+
+**Evidência:**
+
+[ERROR]   MultaTotalCentavosTest.deveCobrarTarifaProgressivaPorEmprestimo:42 expected: `<2200>` but was: `<1100>`
+
+**Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-016 — Total incorreto na carência de professor
+
+**Método:** multaTotalCentavos(TipoUsuario tipo, int[] diasAtrasoPorEmprestimo)
+
+**Entrada:** PROFESSOR com [3, 4, 4] dias de atraso (CT06).
+
+**Técnica:** Análise de valores-limite (CE51 e CE52).
+
+**Resultado esperado:** 200 centavos.
+
+**Resultado obtido:** 400 centavos.
+
+**Descrição:**
+O atraso de três dias está dentro da carência. Cada
+um dos dois atrasos de quatro dias deve contribuir
+com 100 centavos.
+
+**Evidência:**
+
+[ERROR]   MultaTotalCentavosTest.deveAplicarCarenciaACadaEmprestimoDoProfessor:49 expected: `<200>` but was: `<400>`
+
+**Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-017 — Total abaixo do teto quando a soma ultrapassa 10000 centavos
+
+**Método:** multaTotalCentavos(TipoUsuario tipo, int[] diasAtrasoPorEmprestimo)
+
+**Entrada:** ALUNO com [0, 30, 30, 1] dias de atraso (CT12).
+
+**Técnica:** Análise de valores-limite (CE58).
+
+**Resultado esperado:** 10000 centavos.
+
+**Resultado obtido:** 5000 centavos.
+
+**Descrição:**
+As multas individuais somam 10100 centavos e o teto
+deve reduzir esse valor a 10000 centavos. Com
+[0, 30, 30], o teste CT11 retornou corretamente
+10000 centavos.
+
+**Evidência:**
+
+[ERROR]   MultaTotalCentavosTest.deveLimitarTotalAcimaDoTeto:91 expected: `<10000>` but was: `<5000>`
+
+**Status:** Reproduzido por teste automatizado.
+
+---
+
+## DEF-018 — Elemento negativo na lista não é rejeitado
+
+**Método:** multaTotalCentavos(TipoUsuario tipo, int[] diasAtrasoPorEmprestimo)
+
+**Entrada:** ALUNO com [1, -1, 2] dias de atraso (CT13).
+
+**Técnica:** Particionamento de equivalência e análise de valores-limite (CE59).
+
+**Resultado esperado:** IllegalArgumentException.
+
+**Resultado obtido:** Nenhuma exceção lançada.
+
+**Descrição:**
+A presença de um elemento negativo torna a lista
+inválida mesmo quando os demais elementos são válidos.
+
+**Evidência:**
+
+[ERROR]   MultaTotalCentavosTest.deveLancarExcecaoParaElementoNegativo:98 Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+
+**Status:** Reproduzido por teste automatizado.

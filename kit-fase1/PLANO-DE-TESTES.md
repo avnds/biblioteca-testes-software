@@ -337,3 +337,90 @@ renove um empréstimo.
 
 Os valores esperados foram mantidos conforme a
 especificação, mesmo nos testes reprovados.
+
+## 7. Método multaTotalCentavos(TipoUsuario tipo, int[] diasAtrasoPorEmprestimo)
+
+### Objetivo
+
+Verificar a soma das multas de cada empréstimo, com
+as regras de cobrança individual e o teto total de
+10000 centavos.
+
+### Técnicas utilizadas
+
+- Particionamento de equivalência.
+- Análise de valores-limite.
+
+### Classes de equivalência
+
+| Classe | Descrição | Tipo | Casos de teste |
+|---|---|---|---|
+| CE43 | ALUNO | Válida | CT01–CT02, CT04–CT05, CT07–CT12 |
+| CE44 | PROFESSOR | Válida | CT06 |
+| CE45 | VISITANTE | Válida | CT03 |
+| CE46 | Lista vazia | Válida | CT01 |
+| CE47 | Lista com um empréstimo | Válida | CT02–CT03, CT07–CT08 |
+| CE48 | Lista com vários empréstimos | Válida | CT04–CT06, CT09–CT12 |
+| CE49 | Empréstimo sem atraso | Válida | CT02, CT04 |
+| CE50 | Empréstimo com atraso positivo | Válida | CT03–CT05 |
+| CE51 | Atraso dentro da carência de PROFESSOR | Válida | CT06 |
+| CE52 | Atraso acima da carência de PROFESSOR | Válida | CT06 |
+| CE53 | Dias cobrados na primeira faixa de tarifa | Válida | CT03, CT05 |
+| CE54 | Dias cobrados na segunda faixa de tarifa | Válida | CT05, CT07–CT09 |
+| CE55 | Multa individual calculada abaixo do teto | Válida | CT07 |
+| CE56 | Multa individual calculada no teto ou acima dele | Válida | CT08–CT09 |
+| CE57 | Soma das multas individuais até 10000 centavos | Válida | CT10–CT11 |
+| CE58 | Soma das multas individuais acima de 10000 centavos | Válida | CT12 |
+| CE59 | Lista com elemento negativo | Inválida | CT13 |
+| CE60 | Lista nula | Inválida | CT14 |
+| CE61 | Tipo de usuário nulo | Inválida | CT15 |
+
+### Casos de teste
+
+| ID | Teste | Tipo de usuário | Dias de atraso por empréstimo | Esperado (centavos ou exceção) | Resultado |
+|---|---|---|---|---|---|
+| CT01 | `deveRetornarZeroParaListaVazia` | ALUNO | `[]` | 0 | Aprovado |
+| CT02 | `deveRetornarZeroParaEmprestimoSemAtraso` | ALUNO | `[0]` | 0 | Aprovado |
+| CT03 | `deveCobrarMultaParaUmDiaDeAtraso` | VISITANTE | `[1]` | 100 | Reprovado — DEF-014 |
+| CT04 | `deveSomarMultasDeVariosEmprestimos` | ALUNO | `[0, 1, 2]` | 300 | Aprovado |
+| CT05 | `deveCobrarTarifaProgressivaPorEmprestimo` | ALUNO | `[10, 11]` | 2200 | Reprovado — DEF-015 |
+| CT06 | `deveAplicarCarenciaACadaEmprestimoDoProfessor` | PROFESSOR | `[3, 4, 4]` | 200 | Reprovado — DEF-016 |
+| CT07 | `deveManterMultaIndividualAbaixoDoTeto` | ALUNO | `[29]` | 4800 | Reprovado — DEF-014 |
+| CT08 | `deveAtingirTetoIndividual` | ALUNO | `[30]` | 5000 | Reprovado — DEF-014 |
+| CT09 | `deveLimitarMultaIndividualAntesDeSomar` | ALUNO | `[31, 1]` | 5100 | Reprovado — DEF-014 |
+| CT10 | `deveManterTotalAbaixoDoTeto` | ALUNO | `[0, 30, 29, 1]` | 9900 | Aprovado |
+| CT11 | `deveAtingirTetoTotal` | ALUNO | `[0, 30, 30]` | 10000 | Aprovado |
+| CT12 | `deveLimitarTotalAcimaDoTeto` | ALUNO | `[0, 30, 30, 1]` | 10000 | Reprovado — DEF-017 |
+| CT13 | `deveLancarExcecaoParaElementoNegativo` | ALUNO | `[1, -1, 2]` | IllegalArgumentException | Reprovado — DEF-018 |
+| CT14 | `deveLancarExcecaoParaListaNula` | ALUNO | `null` | IllegalArgumentException | Aprovado |
+| CT15 | `deveLancarExcecaoParaTipoNulo` | null | `[1]` | IllegalArgumentException | Aprovado |
+
+### Análise de valores-limite
+
+Foram verificados:
+
+- 0, 1 e vários empréstimos na lista (CT01–CT04).
+- -1, 0 e 1 dia de atraso (CT13, CT02 e CT03).
+- 3 e 4 dias de atraso para PROFESSOR (CT06).
+- 10 e 11 dias cobrados, na transição de tarifa (CT05).
+- 29, 30 e 31 dias de atraso em torno do teto individual (CT07–CT09).
+- Somas de 9900, 10000 e 10100 centavos antes de aplicar o teto
+  global (CT10–CT12). O primeiro empréstimo tem zero dias de
+  atraso nesses casos, para isolar o efeito do teto global.
+
+### Resultado da execução
+
+- Testes executados: 15
+- Testes aprovados: 7
+- Testes reprovados: 8
+- Erros de execução: 0
+- Defeitos registrados: DEF-014, DEF-015, DEF-016, DEF-017 e DEF-018.
+
+### Conclusão
+
+Foram observadas divergências na soma das multas, na
+cobrança progressiva, na carência de PROFESSOR, no
+teto total e na validação de dias negativos.
+
+Os valores esperados foram mantidos conforme a
+especificação, mesmo nos testes reprovados.
